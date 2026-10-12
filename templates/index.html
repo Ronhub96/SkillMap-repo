@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SkillMap | Find Your Direction</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <span class="logo-icon">S</span>
+            SkillMap
+        </a>
+
+        <div class="nav-links">
+            <a href="/" class="active">Dashboard</a>
+            <a href="/careers">Explore Careers</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    YOUR FUTURE, MAPPED OUT
+                </div>
+
+                <h1>
+                    Your potential.<br>
+                    <span class="gradient-text">Your next move.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Discover careers that match your skills, understand
+                    the path to get there, and find opportunities that
+                    move your future forward.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="/careers" class="btn-primary">
+                        Explore Careers
+                        <span aria-hidden="true">↗</span>
+                    </a>
+
+                    <a href="#how-it-works" class="btn-secondary">
+                        Discover SkillMap
+                        <span aria-hidden="true">↓</span>
+                    </a>
+                </div>
+
+                <div class="hero-trust">
+                    <div class="trust-indicator">
+                        <span class="trust-dot"></span>
+                        Skills-first approach
+                    </div>
+                    <div class="trust-indicator">
+                        <span class="trust-dot"></span>
+                        Clear career pathways
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="globe-container">
+                    <div class="globe-label">
+                        <span class="status-dot"></span>
+                        SKILLMAP GLOBAL NETWORK
+                    </div>
+
+                    <div id="skillmap-globe"></div>
+
+                    <div class="globe-hint">
+                        DRAG TO EXPLORE · SCROLL TO ZOOM
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-item">
+                <span class="stat-icon">◎</span>
+                <div>
+                    <strong>Discover</strong>
+                    <p>Explore different career paths</p>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-icon">⌘</span>
+                <div>
+                    <strong>Understand</strong>
+                    <p>Know the skills you need</p>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-icon">↗</span>
+                <div>
+                    <strong>Take action</strong>
+                    <p>Build your career roadmap</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="how-it-works">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">A CLEARER WAY FORWARD</span>
+                    <h2>Your next chapter starts here.</h2>
+                </div>
+
+                <a href="/careers" class="text-link">
+                    Explore careers ↗
+                </a>
+            </div>
+
+            <div class="feature-grid">
+                <article class="feature-card spotlight-card">
+                    <span class="feature-number">01 / DISCOVER</span>
+                    <div class="feature-symbol">⌕</div>
+                    <h3>Find your direction</h3>
+                    <p>
+                        Explore different professions and discover
+                        opportunities you might never have considered.
+                    </p>
+                    <a href="/careers">Browse careers ↗</a>
+                </article>
+
+                <article class="feature-card featured spotlight-card">
+                    <span class="feature-number">02 / MATCH</span>
+                    <div class="feature-symbol">✳</div>
+                    <h3>Connect skills to careers</h3>
+                    <p>
+                        Understand how your existing skills relate
+                        to different professional paths.
+                    </p>
+                    <a href="/careers">Get started ↗</a>
+                </article>
+
+                <article class="feature-card spotlight-card">
+                    <span class="feature-number">03 / GROW</span>
+                    <div class="feature-symbol">↗</div>
+                    <h3>Plan your progress</h3>
+                    <p>
+                        Identify the skills you need and take
+                        practical steps towards your goals.
+                    </p>
+                    <a href="/careers">Start exploring ↗</a>
+                </article>
+            </div>
+        </section>
+
+        <footer>
+            <a href="/" class="logo">
+                <span class="logo-icon">S</span>
+                SkillMap
+            </a>
+
+            <p>Less uncertainty. More direction.</p>
+
+            <span>© 2026 SkillMap</span>
+        </footer>
+
+    </main>
+<script src="{{ url_for('static', filename='js/cosmic.js') }}"></script>
+<script
+    type="module"
+    src="{{ url_for('static', filename='js/script.js') }}">
+</script>
+
+<script>
+    document.querySelectorAll('.spotlight-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+</script>
+</body>
+</html>

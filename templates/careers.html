@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Careers | SkillMap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <span class="logo-icon">S</span>
+            SkillMap
+        </a>
+
+        <div class="nav-links">
+            <a href="/">Dashboard</a>
+            <a href="/careers" class="active">Explore Careers</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <section class="section">
+            <span class="eyebrow">EXPLORE OPPORTUNITIES</span>
+            <h1 style="font-size: clamp(34px, 4vw, 48px); margin: 12px 0 8px;">
+                Career catalogue<span style="color: var(--primary);">.</span>
+            </h1>
+            <p style="color: var(--muted); max-width: 550px;">
+                Explore in-demand roles, required competencies, and actionable step-by-step roadmaps.
+            </p>
+
+            <!-- Visual Degree / Course Selection Cards Grid -->
+            <div id="course-selection" style="margin-top: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="eyebrow">STEP 1: SELECT YOUR ACADEMIC DEGREE / COURSE</span>
+                        <h2 style="font-size: 20px; margin-top: 4px;">Choose your qualification to explore career paths</h2>
+                    </div>
+                    {% if selected_degree %}
+                        <a href="/careers" class="clear-filter-btn" style="font-size: 12px; color: var(--primary); font-weight: 700; text-decoration: underline;">
+                            ✕ Show All Careers (Clear Selection)
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="degree-card-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;">
+                    {% for deg in popular_degrees %}
+                        <a href="/careers?degree={{ deg.code }}{% if query %}&q={{ query }}{% endif %}"
+                           class="degree-choice-card spotlight-card {% if selected_degree == deg.code %}active-degree-card{% endif %}"
+                           style="background: var(--surface); border: 1px solid {% if selected_degree == deg.code %}var(--primary){% else %}var(--border){% endif %}; border-radius: 12px; padding: 18px; text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: border-color 0.2s, box-shadow 0.2s; position: relative;">
+                            
+                            {% if selected_degree == deg.code %}
+                                <div style="position: absolute; top: 12px; right: 12px; font-size: 10px; font-weight: 800; background: var(--primary); color: #0b100e; padding: 2px 7px; border-radius: 4px;">
+                                    ACTIVE
+                                </div>
+                            {% endif %}
+
+                            <div style="font-size: 26px; margin-bottom: 8px;">{{ deg.icon }}</div>
+                            <div style="font-size: 18px; font-weight: 800; color: {% if selected_degree == deg.code %}var(--primary){% else %}var(--text){% endif %};">
+                                {{ deg.code }}
+                            </div>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text); margin-top: 2px;">
+                                {{ deg.name }}
+                            </div>
+                            <div style="font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; flex-grow: 1;">
+                                {{ deg.tagline }}
+                            </div>
+
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 10px; color: var(--muted); display: flex; justify-content: space-between;">
+                                <span>{{ deg.stream }}</span>
+                                <span>{{ deg.duration }}</span>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Search Bar for quick search within selected courses -->
+            <form method="GET" action="/careers" class="career-search-bar" style="margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap;">
+                {% if selected_degree %}
+                    <input type="hidden" name="degree" value="{{ selected_degree }}">
+                {% endif %}
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ query }}"
+                    placeholder="Search specific roles or skills within {% if selected_degree %}{{ selected_degree }}{% else %}all paths{% endif %} (e.g. Python, Analyst, Design)..."
+                    class="search-input"
+                >
+                <button type="submit" class="btn-primary" style="padding: 12px 24px;">Search</button>
+                {% if query %}
+                    <a href="/careers{% if selected_degree %}?degree={{ selected_degree }}{% endif %}" class="btn-secondary" style="padding: 12px 18px;">Clear Query</a>
+                {% endif %}
+            </form>
+
+            <div style="margin-top: 24px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    {% if selected_degree %}
+                        Showing <strong>{{ careers|length }}</strong> Career Paths for <strong>{{ selected_degree }} Graduates</strong>
+                    {% else %}
+                        Showing <strong>{{ careers|length }}</strong> Total Career Paths (Select a degree above to filter)
+                    {% endif %}
+                    {% if query %} matching "<strong>{{ query }}</strong>"{% endif %}
+                </div>
+            </div>
+
+            <!-- Dynamic Python Jinja Loop -->
+            <div class="feature-grid" style="margin-top: 24px;">
+                {% for career in careers %}
+                    <a href="/career/{{ career.id }}" class="feature-card career-card spotlight-card" style="display: flex; flex-direction: column; cursor: pointer; text-decoration: none; color: inherit; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="feature-number">{{ career.stream }}</span>
+                            <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.06); color: var(--muted);">
+                                {{ career.level }}
+                            </span>
+                        </div>
+
+                        <div class="feature-symbol">{{ career.symbol }}</div>
+                        <h3 style="margin-bottom: 8px;">{{ career.title }}</h3>
+                        <p style="min-height: 52px; font-size: 13px; color: var(--muted); line-height: 1.6;">{{ career.description }}</p>
+
+                        <!-- Eligible Degrees Badges -->
+                        <div style="margin: 14px 0 16px;">
+                            <div style="font-size: 10px; color: var(--primary); font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px;">
+                                Accepted Degrees / Streams:
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                {% for d in career.eligible_degrees %}
+                                    <span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; {% if selected_degree and d == selected_degree %}background: var(--primary); color: #0b100e;{% else %}background: rgba(185, 245, 107, 0.1); color: var(--primary); border: 1px solid rgba(185, 245, 107, 0.25);{% endif %}">
+                                        {{ d }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Top Skills -->
+                        <div class="skill-tags" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;">
+                            {% for skill in career.skills[:3] %}
+                                <span class="skill-pill">{{ skill }}</span>
+                            {% endfor %}
+                            {% if career.skills|length > 3 %}
+                                <span class="skill-pill">+{{ career.skills|length - 3 }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 14px; margin-top: auto;">
+                            <span style="font-size: 12px; color: var(--muted); font-weight: 600;">
+                                {{ career.salary_range.split(' - ')[0] }}+
+                            </span>
+                            <span style="color: var(--primary); font-weight: 700; font-size: 12px;">
+                                View Full Roadmap ↗
+                            </span>
+                        </div>
+                    </a>
+                {% else %}
+                    <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 12px;">
+                        <p style="color: var(--muted); margin-bottom: 12px;">No careers matched your search criteria.</p>
+                        <a href="/careers" class="btn-primary" style="display: inline-block;">Reset Filters</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </section>
+
+        <footer>
+            <a href="/" class="logo">
+                <span class="logo-icon">S</span>
+                SkillMap
+            </a>
+            <p>Less uncertainty. More direction.</p>
+            <span>© 2026 SkillMap</span>
+        </footer>
+
+    </main>
+
+    <!-- Cosmic Starfield & Meteor Shower Background -->
+    <script src="{{ url_for('static', filename='js/cosmic.js') }}"></script>
+
+    <!-- Aceternity UI Card Spotlight & Scroll Preservation Script -->
+    <script>
+        // Spotlight Glow interaction
+        document.querySelectorAll('.spotlight-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Keep scroll position smooth & stable when clicking degree cards
+        document.querySelectorAll('.degree-choice-card, .clear-filter-btn').forEach(el => {
+            el.addEventListener('click', () => {
+                sessionStorage.setItem('skillmap_degree_scroll', window.scrollY);
+            });
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedScroll = sessionStorage.getItem('skillmap_degree_scroll');
+            if (savedScroll !== null) {
+                window.scrollTo({ top: parseInt(savedScroll, 10), behavior: 'instant' });
+                sessionStorage.removeItem('skillmap_degree_scroll');
+            }
+        });
+    </script>
+</body>
+</html>
